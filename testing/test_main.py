@@ -52,7 +52,7 @@ class UnitTests(unittest.TestCase) :
        for j in range(1,4) : 
            inputs.append((myp,j,ns,))
            p = myprobs[j-1,1]
-           myvar = randomvar( p, variance=p*(1-p), vmin=0, vmax=1, isinteger=False )
+           myvar = randomvar( p, variance=p*(1-p)/ns, vmin=0, vmax=1, isinteger=False )
            variables.append( myvar )
        assert( check_func("test_mean", inputs, variables, modname=helper ) )
 
@@ -61,6 +61,6 @@ class UnitTests(unittest.TestCase) :
        for j in range(1,4) : 
            inputs.append((myp,j,ns,))
            p = myprobs[j-1,1]
-           myvar = randomvar( p, dist="chi2", variance=p*(1-p), isinteger=False )
+           myvar = randomvar( p, dist="chi2", variance=p*(1-p)/ns, isinteger=False )
            variables.append( myvar )
        assert( check_func("test_var", inputs, variables, modname=helper ) )
