@@ -20,7 +20,7 @@ class helper :
        m, e = sample_mean( probs, start, n )
        return m
  
-   def test_mean( probs, start, n ) :
+   def test_var( probs, start, n ) :
        m, e = sample_mean( probs, start, n )
        return ( e / scipy.stats.norm.ppf(0.95) )**2 
 
@@ -40,27 +40,27 @@ class UnitTests(unittest.TestCase) :
    def test_endstate(self) :
        inputs, variables = [], [] 
        for j in range(1,4) :
-           for i in range(10)
+           for i in range(10) :
                inputs.append((myp,j,))
-               p = myprobs[j,1]
+               p = myprobs[j-1,1]
                myvar = randomvar( p, variance=p*(1-p), vmin=0, vmax=1, isinteger=True )
                variables.append( myvar )
        assert( check_func("endstate", inputs, variables, calls=["markov_move"] ) )
 
-  def test_mean(self) :
-      ns = 100
-      for j in range(1,4) : 
-          inputs.append((myp,j,ns,))
-          p = myprobs[j,1]
-          myvar = randomvar( p, variance=p*(1-p), vmin=0, vmax=1, isinteger=False )
-          variables.append( myvar )
-     assert( check_func("test_mean", inputs, variables, modname="helper" ) )
+   def test_mean(self) :
+       ns, inputs, variables = 100, [], []
+       for j in range(1,4) : 
+           inputs.append((myp,j,ns,))
+           p = myprobs[j-1,1]
+           myvar = randomvar( p, variance=p*(1-p), vmin=0, vmax=1, isinteger=False )
+           variables.append( myvar )
+       assert( check_func("test_mean", inputs, variables, modname=helper ) )
 
-  def test_mean(self) :
-      ns = 100
-      for j in range(1,4) : 
-          inputs.append((myp,j,ns,))
-          p = myprobs[j,1]
-          myvar = randomvar( p, dist="chi2", variance=p*(1-p), isinteger=False )
-          variables.append( myvar )
-     assert( check_func("test_var", inputs, variables, modname="helper" ) )
+   def test_var(self) :
+       ns, inputs, variables = 100, [], []
+       for j in range(1,4) : 
+           inputs.append((myp,j,ns,))
+           p = myprobs[j-1,1]
+           myvar = randomvar( p, dist="chi2", variance=p*(1-p), isinteger=False )
+           variables.append( myvar )
+       assert( check_func("test_var", inputs, variables, modname=helper ) )
