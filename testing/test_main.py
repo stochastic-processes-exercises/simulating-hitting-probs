@@ -15,15 +15,6 @@ myp = np.array([[1,0,0,0,0],[1/3,1/3,1/3,0,0],[0,0.5,0,0.5,0],[0,0.5,0,0,0.5],[0
 myq, myr = np.array([[1/3,1/3,0],[0.5,0,0.5],[0.5,0,0]]), np.array([[1/3,0],[0,0],[0,1/2]])
 myprobs = np.dot( np.linalg.inv( np.identity(3) - myq ), myr )
 
-class helper : 
-   def test_mean( probs, start, n ) :
-       m, e = sample_mean( probs, start, n )
-       return m
- 
-   def test_var( probs, start, n ) :
-       m, e = sample_mean( probs, start, n )
-       return ( e / scipy.stats.norm.ppf(0.95) )**2 
-
 class UnitTests(unittest.TestCase) :
    def test_markov_move(self) :      
        myvars, inputs, variables = np.array([0,1,2,3,4]), [], [] 
@@ -52,15 +43,6 @@ class UnitTests(unittest.TestCase) :
        for j in range(1,4) : 
            inputs.append((myp,j,ns,))
            p = myprobs[j-1,1]
-           myvar = randomvar( p, variance=p*(1-p)/ns, vmin=0, vmax=1, isinteger=False )
+           myvar = randomvar( p, variance=p*(1-p)/ns, dist="uncertainty", dof=ns-1, limit=0.9, vmin=0, vmax=1 )
            variables.append( myvar )
-       assert( check_func("test_mean", inputs, variables, modname=helper ) )
-
-   def test_var(self) :
-       ns, inputs, variables = 100, [], []
-       for j in range(1,4) : 
-           inputs.append((myp,j,ns,))
-           p = myprobs[j-1,1]
-           myvar = randomvar( p, dist="chi2", variance=p*(1-p)/ns, isinteger=False )
-           variables.append( myvar )
-       assert( check_func("test_var", inputs, variables, modname=helper ) )
+       assert( check_func("sample_mean", inputs, variables ) )
